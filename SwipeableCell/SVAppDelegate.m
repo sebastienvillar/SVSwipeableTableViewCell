@@ -7,6 +7,7 @@
 //
 
 #import "SVAppDelegate.h"
+#import "SVTableViewController.h"
 
 @implementation SVAppDelegate
 
@@ -15,6 +16,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+	SVTableViewController* controller = [[SVTableViewController alloc] init];
+	self.window.rootViewController = controller;
     [self.window makeKeyAndVisible];
     return YES;
 }

@@ -9,5 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface SVSwipeableTableViewCell : UITableViewCell
+@property (strong, readwrite) UIView* leftCellBackground;
+@property (strong, readwrite) UIView* rightCellBackground;
+
+- (void)addLeftAction;
+- (void)addRightAction;
+- (void)removeLeftAction;
+- (void)removeRightAction;
 
 @end
