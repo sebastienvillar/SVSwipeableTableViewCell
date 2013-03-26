@@ -9,71 +9,125 @@
 #import "SVSwipeableTableViewCell.h"
 #import "SVCellBackground.h"
 
+@interface SVSwipeableTableViewCell ()
+@property (assign, readwrite) UIView* sv_shownCellBackgroundView;
+@end
+
 @implementation SVSwipeableTableViewCell
-@synthesize leftCellBackground = _leftCellBackground,
-			rightCellBackground = _rightCellBackground;
+@synthesize leftCellBackgroundView = _leftCellBackgroundView,
+			rightCellBackgroundView = _rightCellBackgroundView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-		self.backgroundColor = [UIColor clearColor];
+		UIPanGestureRecognizer* gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(sv_swipe:)];
+		gestureRecognizer.minimumNumberOfTouches = 1;
+		gestureRecognizer.maximumNumberOfTouches = 1;
+		gestureRecognizer.cancelsTouchesInView = YES;
+		gestureRecognizer.delaysTouchesBegan = YES;
+		gestureRecognizer.delaysTouchesEnded = YES;
+		gestureRecognizer.delegate = self;
+		[self.contentView addGestureRecognizer:gestureRecognizer];
+		self.contentView.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
 
-#pragma mark - Public methods
+/////////////////////////////////////////////////////////////////////////////
+// Public
+/////////////////////////////////////////////////////////////////////////////
 
 - (void)addLeftAction {
-	if (!self.leftCellBackground) {
-		self.leftCellBackground = [[SVCellBackground alloc] initWithFrame:self.bounds];
+	if (!self.leftCellBackgroundView) {
+		self.leftCellBackgroundView = [[SVCellBackground alloc] initWithFrame:self.bounds];
 	}
-	if (!self.leftCellBackground.superview) {
-		[self insertSubview:self.leftCellBackground belowSubview:self.contentView];
+	if (!self.leftCellBackgroundView.superview) {
+		[self insertSubview:self.leftCellBackgroundView belowSubview:self.contentView];
 	}
-	self.leftCellBackground.hidden = NO;
-	self.leftCellBackground.backgroundColor = [UIColor redColor];
+	self.leftCellBackgroundView.hidden = NO;
+	self.leftCellBackgroundView.backgroundColor = [UIColor redColor];
 }
 
 - (void)removeLeftAction {
-	if (self.leftCellBackground) {
-		[self.leftCellBackground removeFromSuperview];
-		self.leftCellBackground = nil;
+	if (self.leftCellBackgroundView) {
+		[self.leftCellBackgroundView removeFromSuperview];
+		self.leftCellBackgroundView = nil;
 	}
 }
 
 - (void)addRightAction {
-	if (!self.rightCellBackground) {
-		self.rightCellBackground = [[SVCellBackground alloc] initWithFrame:self.bounds];
+	if (!self.rightCellBackgroundView) {
+		self.rightCellBackgroundView = [[SVCellBackground alloc] initWithFrame:self.bounds];
 	}
-	if (!self.rightCellBackground.superview) {
+	if (!self.rightCellBackgroundView.superview) {
 		UIView* view = self.contentView;
-		if (self.leftCellBackground) 
-			view = self.leftCellBackground;
+		if (self.leftCellBackgroundView) 
+			view = self.leftCellBackgroundView;
 		
-		[self insertSubview:self.rightCellBackground belowSubview:view];
+		[self insertSubview:self.rightCellBackgroundView belowSubview:view];
 	}
-	self.rightCellBackground.hidden = NO;
-	self.rightCellBackground.backgroundColor = [UIColor greenColor];
+	self.rightCellBackgroundView.hidden = NO;
+	self.rightCellBackgroundView.backgroundColor = [UIColor greenColor];
 }
 
 - (void)removeRightAction {
-	if (self.rightCellBackground) {
-		[self.rightCellBackground removeFromSuperview];
-		self.rightCellBackground = nil;
+	if (self.rightCellBackgroundView) {
+		[self.rightCellBackgroundView removeFromSuperview];
+		self.rightCellBackgroundView = nil;
 	}
 }
 
-
-#pragma mark - Overwritten methods
+#pragma mark - Overwritten
 
 - (void)insertSubview:(UIView *)view atIndex:(NSInteger)index {
 	[super insertSubview:view atIndex:index];
-	if (self.leftCellBackground) {
-		[self sendSubviewToBack:self.leftCellBackground];
+	if (self.leftCellBackgroundView) {
+		[self sendSubviewToBack:self.leftCellBackgroundView];
 	}
-	if (self.rightCellBackground) {
-		[self sendSubviewToBack:self.rightCellBackground];
+	if (self.rightCellBackgroundView) {
+		[self sendSubviewToBack:self.rightCellBackgroundView];
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// Private
+/////////////////////////////////////////////////////////////////////////////
+
+#pragma mark - UIGestureRecognizer
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+	if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		return self.leftCellBackgroundView || self.rightCellBackgroundView;
+	}
+	return NO;
+}
+
+- (void)sv_swipe:(UIPanGestureRecognizer*)gestureRecognizer {
+	if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+	}
+	
+	else if (gestureRecognizer.state == UIGestureRecognizerStateEnded ||
+			 gestureRecognizer.state == UIGestureRecognizerStateCancelled) {
+		
+	}
+	
+	else {
+		CGPoint translationPoint = [gestureRecognizer translationInView:self];
+		UIView* shownCellBackgroundView = translationPoint.x > 0 ? self.leftCellBackgroundView : self.rightCellBackgroundView;
+		BOOL translate = shownCellBackgroundView != nil;
+		
+		if (translate) {
+			if (shownCellBackgroundView == self.leftCellBackgroundView) {
+				self.leftCellBackgroundView.hidden = NO;
+			}
+			else {
+				self.leftCellBackgroundView.hidden = YES;
+			}
+			CGRect contentViewFrame = self.contentView.frame;
+			contentViewFrame.origin.x = translationPoint.x;
+			self.contentView.frame = contentViewFrame;
+		}
 	}
 }
 

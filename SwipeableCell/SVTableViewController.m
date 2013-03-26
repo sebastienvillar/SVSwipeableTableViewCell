@@ -33,6 +33,7 @@
 {
     [super viewDidLoad];
 	[self.tableView registerClass:[SVSwipeableTableViewCell class] forCellReuseIdentifier:@"Cell"];
+	self.tableView.canCancelContentTouches = NO;
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -65,8 +66,9 @@
     SVSwipeableTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     cell.textLabel.text = [self.data objectAtIndex:indexPath.row];
-	cell.textLabel.backgroundColor = [UIColor clearColor];
-	[cell addLeftAction];
+	//cell.textLabel.backgroundColor = [UIColor clearColor];
+	[cell addRightAction];
+	//[cell addLeftAction];
     return cell;
 }
 
