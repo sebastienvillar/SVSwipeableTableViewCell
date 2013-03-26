@@ -39,11 +39,12 @@
 		self.contentView.backgroundColor = [UIColor whiteColor];
 		CALayer* contentLayer = self.contentView.layer;
 		contentLayer.shadowColor = [UIColor blackColor].CGColor;
-		contentLayer.shadowOpacity = 0.0;
+		contentLayer.shadowOpacity = 0.5;
 		contentLayer.shadowRadius = 3.0;
 		contentLayer.shadowOffset = CGSizeMake(0, 0);
-		CGRect shadowRect = CGRectInset(contentLayer.frame, -3, 3);
+		CGRect shadowRect = CGRectInset(contentLayer.frame, 0, 0);
 		contentLayer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
+		self.clipsToBounds = YES;
 		sv_swiping = NO;
     }
     return self;
