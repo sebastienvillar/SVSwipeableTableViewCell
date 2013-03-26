@@ -34,6 +34,7 @@
     [super viewDidLoad];
 	[self.tableView registerClass:[SVSwipeableTableViewCell class] forCellReuseIdentifier:@"Cell"];
 	self.tableView.canCancelContentTouches = NO;
+	self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;

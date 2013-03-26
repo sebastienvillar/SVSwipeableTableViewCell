@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface SVCellBackground : UIView
-
+@property (strong, readonly) UILabel* title;
 @end

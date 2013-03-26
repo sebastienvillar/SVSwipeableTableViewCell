@@ -37,6 +37,13 @@
 		gestureRecognizer.delegate = self;
 		[self.contentView addGestureRecognizer:gestureRecognizer];
 		self.contentView.backgroundColor = [UIColor whiteColor];
+		CALayer* contentLayer = self.contentView.layer;
+		contentLayer.shadowColor = [UIColor blackColor].CGColor;
+		contentLayer.shadowOpacity = 0.0;
+		contentLayer.shadowRadius = 3.0;
+		contentLayer.shadowOffset = CGSizeMake(0, 0);
+		CGRect shadowRect = CGRectInset(contentLayer.frame, -3, 3);
+		contentLayer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
 		sv_swiping = NO;
     }
     return self;
@@ -54,7 +61,6 @@
 		[self insertSubview:self.leftCellBackgroundView belowSubview:self.contentView];
 	}
 	self.leftCellBackgroundView.hidden = NO;
-	self.leftCellBackgroundView.backgroundColor = [UIColor redColor];
 }
 
 - (void)removeLeftAction {
@@ -76,7 +82,6 @@
 		[self insertSubview:self.rightCellBackgroundView belowSubview:view];
 	}
 	self.rightCellBackgroundView.hidden = NO;
-	self.rightCellBackgroundView.backgroundColor = [UIColor greenColor];
 }
 
 - (void)removeRightAction {
@@ -113,6 +118,7 @@
 
 - (void)sv_swipe:(UIPanGestureRecognizer*)gestureRecognizer {
 	if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+		
 	}
 	
 	else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
