@@ -18,7 +18,7 @@
 		4D463C3B1701B76D00377E73 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D463C3A1701B76D00377E73 /* Default-568h@2x.png */; };
 		4D463C431701B78600377E73 /* SVSwipeableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C421701B78600377E73 /* SVSwipeableTableViewCell.m */; };
 		4D463C461701B98300377E73 /* SVBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C451701B98300377E73 /* SVBubbleView.m */; };
-		4D463C491701B9AB00377E73 /* SVCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C481701B9AB00377E73 /* SVCellBackground.m */; };
+		4D463C491701B9AB00377E73 /* SVBackgroundCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C481701B9AB00377E73 /* SVBackgroundCell.m */; };
 		4DBD92B81701BFD900229ABB /* SVTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBD92B71701BFD900229ABB /* SVTableViewController.m */; };
 		4DBD92BD1701CE6200229ABB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DBD92BB1701CE3B00229ABB /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
@@ -41,8 +41,8 @@
 		4D463C421701B78600377E73 /* SVSwipeableTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSwipeableTableViewCell.m; sourceTree = "<group>"; };
 		4D463C441701B98300377E73 /* SVBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVBubbleView.h; sourceTree = "<group>"; };
 		4D463C451701B98300377E73 /* SVBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVBubbleView.m; sourceTree = "<group>"; };
-		4D463C471701B9AB00377E73 /* SVCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVCellBackground.h; sourceTree = "<group>"; };
-		4D463C481701B9AB00377E73 /* SVCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVCellBackground.m; sourceTree = "<group>"; };
+		4D463C471701B9AB00377E73 /* SVBackgroundCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVBackgroundCell.h; sourceTree = "<group>"; };
+		4D463C481701B9AB00377E73 /* SVBackgroundCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVBackgroundCell.m; sourceTree = "<group>"; };
 		4DBD92B61701BFD900229ABB /* SVTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTableViewController.h; sourceTree = "<group>"; };
 		4DBD92B71701BFD900229ABB /* SVTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVTableViewController.m; sourceTree = "<group>"; };
 		4DBD92BB1701CE3B00229ABB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -102,8 +102,8 @@
 				4D463C421701B78600377E73 /* SVSwipeableTableViewCell.m */,
 				4D463C441701B98300377E73 /* SVBubbleView.h */,
 				4D463C451701B98300377E73 /* SVBubbleView.m */,
-				4D463C471701B9AB00377E73 /* SVCellBackground.h */,
-				4D463C481701B9AB00377E73 /* SVCellBackground.m */,
+				4D463C471701B9AB00377E73 /* SVBackgroundCell.h */,
+				4D463C481701B9AB00377E73 /* SVBackgroundCell.m */,
 				4D463C2B1701B76D00377E73 /* Supporting Files */,
 			);
 			path = SwipeableCell;
@@ -193,7 +193,7 @@
 				4D463C351701B76D00377E73 /* SVAppDelegate.m in Sources */,
 				4D463C431701B78600377E73 /* SVSwipeableTableViewCell.m in Sources */,
 				4D463C461701B98300377E73 /* SVBubbleView.m in Sources */,
-				4D463C491701B9AB00377E73 /* SVCellBackground.m in Sources */,
+				4D463C491701B9AB00377E73 /* SVBackgroundCell.m in Sources */,
 				4DBD92B81701BFD900229ABB /* SVTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

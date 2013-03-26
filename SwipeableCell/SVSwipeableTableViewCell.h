@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface SVSwipeableTableViewCell : UITableViewCell
-@property (strong, readwrite) UIView* leftCellBackgroundView;
-@property (strong, readwrite) UIView* rightCellBackgroundView;
+@property (strong, readwrite) UIView* leftBackgroundCellView;
+@property (strong, readwrite) UIView* rightBackgroundCellView;
+@property (assign, readwrite) BOOL withShadowAnimation;
 
 - (void)addLeftAction;
 - (void)addRightAction;

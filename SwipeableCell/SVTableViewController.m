@@ -70,6 +70,7 @@
 	//cell.textLabel.backgroundColor = [UIColor clearColor];
 	[cell addRightAction];
 	[cell addLeftAction];
+	cell.withShadowAnimation = NO;
     return cell;
 }
 

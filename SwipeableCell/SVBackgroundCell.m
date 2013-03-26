@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Sébastien Villar. All rights reserved.
 //
 
-#import "SVCellBackground.h"
+#import "SVBackgroundCell.h"
 
 #define kDefaultBackgroundColor [UIColor colorWithRed:0.9098 green:0.9098 blue:0.9098 alpha:1.0000]
 
-@implementation SVCellBackground
+@implementation SVBackgroundCell
 @synthesize title = _title;
 
 - (id)initWithFrame:(CGRect)frame

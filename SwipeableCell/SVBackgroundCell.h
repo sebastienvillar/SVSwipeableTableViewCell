@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SVCellBackground : UIView
+@interface SVBackgroundCell : UIView
 @property (strong, readonly) UILabel* title;
 @end
