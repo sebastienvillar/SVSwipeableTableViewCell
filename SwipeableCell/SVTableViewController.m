@@ -68,7 +68,7 @@
     cell.textLabel.text = [self.data objectAtIndex:indexPath.row];
 	//cell.textLabel.backgroundColor = [UIColor clearColor];
 	[cell addRightAction];
-	//[cell addLeftAction];
+	[cell addLeftAction];
     return cell;
 }
 
