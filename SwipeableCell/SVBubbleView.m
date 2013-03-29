@@ -29,6 +29,8 @@
 		_innerRadius = 0;
 		_outerRadius = 9;
 		self.backgroundColor = [UIColor clearColor];
+		[self addObserver:self forKeyPath:@"innerRadius" options:NSKeyValueObservingOptionOld context:nil];
+		[self addObserver:self forKeyPath:@"outerRadius" options:NSKeyValueObservingOptionOld context:nil];
     }
     return self;
 }
@@ -44,6 +46,33 @@
 	
 	[self.innerColor set];
 	CGContextFillEllipseInRect(context, innerCircleBounds);
+}
+
+- (void)setInnerRadius:(float)innerRadius {
+	_innerRadius = innerRadius;
+	if (innerRadius > self.outerRadius - 3) {
+		_innerRadius = self.outerRadius - 3;
+	}
+}
+
+- (float)innerRadius {
+	return _innerRadius;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	float oldValue;
+	[[change objectForKey:NSKeyValueChangeOldKey] getValue:&oldValue];
+	
+	if ([keyPath isEqualToString:@"innerRadius"]) {
+		if (oldValue != self.innerRadius) {
+			[self setNeedsDisplay];
+		}
+	}
+	if ([keyPath isEqualToString:@"innerRadius"]) {
+		if (oldValue != self.outerRadius) {
+			[self setNeedsDisplay];
+		}
+	}
 }
 
 @end

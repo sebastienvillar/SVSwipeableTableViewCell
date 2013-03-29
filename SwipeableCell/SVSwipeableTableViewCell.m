@@ -14,11 +14,15 @@
 
 #define kSwipeEndAnimationOffset 10
 #define kSwipeEndAnimationDuration 0.4
+#define kTriggerDistance 25
 
 @interface SVSwipeableTableViewCell ()
 @property (assign, readwrite, getter = sv_isSwiping) BOOL sv_swiping;
 @property (assign, readwrite, getter = sv_isAnimating) BOOL sv_animating;
-@property (assign, readwrite) CGPoint startPosition;
+@property (assign, readwrite) CGPoint sv_beginLeftTriggerPoint;
+@property (assign, readwrite) CGPoint sv_beginRightTriggerPoint;
+@property (assign, readwrite) CGPoint sv_leftTriggerPoint;
+@property (assign, readwrite) CGPoint sv_rightTriggerPoint;
 @end
 
 @implementation SVSwipeableTableViewCell
@@ -26,7 +30,11 @@
 			rightBackgroundCellView = _rightBackgroundCellView,
 			sv_swiping = _sv_swiping,
 			sv_animating = _sv_animating,
-			withShadowAnimation = _withShadowAnimation;
+			withShadowAnimation = _withShadowAnimation,
+			sv_beginLeftTriggerPoint = _sv_beginLeftTriggerPoint,
+			sv_beginRightTriggerPoint = sv_beginRightTriggerPoint,
+			sv_leftTriggerPoint = _sv_leftTriggerPoint,
+			sv_rightTriggerPoint = _sv_rightTriggerPoint;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -157,6 +165,8 @@
 			}
 			float outerRadius = view.bubble.outerRadius;
 			view.bubble.frame = CGRectMake(textSize.width + 18, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
+			self.sv_beginLeftTriggerPoint = CGPointMake(view.bubble.frame.origin.x + view.bubble.frame.size.width + 5, 0);
+			self.sv_leftTriggerPoint = CGPointMake(self.sv_beginLeftTriggerPoint.x + kTriggerDistance, self.sv_beginLeftTriggerPoint.y);
 		}
 		else {
 			SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
@@ -169,6 +179,8 @@
 			}
 			float outerRadius = view.bubble.outerRadius;
 			view.bubble.frame = CGRectMake(view.frame.size.width - textSize.width - 18 - outerRadius*2, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
+			self.sv_beginRightTriggerPoint = CGPointMake(view.bubble.frame.origin.x - 5, 0);
+			self.sv_rightTriggerPoint = CGPointMake(self.sv_beginRightTriggerPoint.x - kTriggerDistance, self.sv_beginRightTriggerPoint.y);
 		}
 	}	
 }
@@ -255,24 +267,52 @@
 		[contentLayer addAnimation:translationAnimation forKey:@"position"];
 		CGPathRelease(path);
 		
+		SVBackgroundCell* view = (SVBackgroundCell*)[self sv_shownBackgroundCellViewWithDestinationPoint:contentFrame.origin];
+		if (view == self.leftBackgroundCellView) {
+			if (contentFrame.origin.x > self.sv_leftTriggerPoint.x) {
+				NSLog(@"trigger left");
+			}
+		}
+		else {
+			if ((contentFrame.origin.x + contentFrame.size.width) < self.sv_rightTriggerPoint.x) {
+				NSLog(@"trigger right");
+			}
+		}
+		
 		contentFrame.origin.x = 0;
 		contentLayer.frame = contentFrame;
 		contentLayer.shadowOpacity = 0.0;
-	}
+		}
 	
 	else {
 		CGPoint destinationPoint = [gestureRecognizer translationInView:self];
 		UIView* shownBackgroundCell = [self sv_shownBackgroundCellViewWithDestinationPoint:destinationPoint];
 		if (shownBackgroundCell) {
+			CGRect contentViewFrame = self.contentView.frame;
+			contentViewFrame.origin.x = destinationPoint.x;
+			self.contentView.frame = contentViewFrame;
+
 			if (shownBackgroundCell == self.leftBackgroundCellView) {
 				self.leftBackgroundCellView.hidden = NO;
+				SVBackgroundCell* view = (SVBackgroundCell*)self.leftBackgroundCellView;
+				if (contentViewFrame.origin.x > self.sv_beginLeftTriggerPoint.x) {
+					float ratio = (contentViewFrame.origin.x - self.sv_beginLeftTriggerPoint.x) / (self.sv_leftTriggerPoint.x - self.sv_beginLeftTriggerPoint.x);
+					view.bubble.innerRadius = ratio * view.bubble.outerRadius;
+				}
+				else
+					view.bubble.innerRadius = 0;
+
 			}
 			else {
 				self.leftBackgroundCellView.hidden = YES;
+				SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
+				if (contentViewFrame.origin.x + contentViewFrame.size.width < self.sv_beginRightTriggerPoint.x) {
+					float ratio = (self.sv_beginRightTriggerPoint.x - (contentViewFrame.origin.x + contentViewFrame.size.width)) / (self.sv_beginRightTriggerPoint.x - self.sv_rightTriggerPoint.x);
+					view.bubble.innerRadius = ratio * view.bubble.outerRadius;
+				}
+				else
+					view.bubble.innerRadius = 0;
 			}
-			CGRect contentViewFrame = self.contentView.frame;
-			contentViewFrame.origin.x = self.startPosition.x + destinationPoint.x;
-			self.contentView.frame = contentViewFrame;
 		}
 	}
 }
@@ -284,6 +324,8 @@
 	if (flag) {
 		if ([[anim valueForKey:@"name"] isEqual:@"position"]) {
 			self.sv_animating = NO;
+			((SVBackgroundCell*)self.leftBackgroundCellView).bubble.innerRadius = 0;
+			((SVBackgroundCell*)self.rightBackgroundCellView).bubble.innerRadius = 0;
 		}
 	}
 }

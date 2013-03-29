@@ -13,6 +13,6 @@
 @property (strong, readwrite) UIColor* outerColor;
 
 //Private
-@property (assign, readwrite) float innerRadius;
+@property (nonatomic, assign, readwrite) float innerRadius;
 @property (assign, readwrite) float outerRadius;
 @end
