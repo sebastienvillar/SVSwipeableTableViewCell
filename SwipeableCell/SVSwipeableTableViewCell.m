@@ -152,6 +152,9 @@
 			UILabel* label = view.title;
 			label.frame = CGRectMake(10, 0, 125, view.frame.size.height);
 			CGSize textSize = [label.text sizeWithFont:label.font];
+			if (textSize.width > label.frame.size.width) {
+				textSize.width = label.frame.size.width;
+			}
 			float outerRadius = view.bubble.outerRadius;
 			view.bubble.frame = CGRectMake(textSize.width + 18, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
 		}
@@ -161,6 +164,9 @@
 			label.textAlignment = NSTextAlignmentRight;
 			label.frame = CGRectMake(view.frame.size.width - 125 - 10, 0, 125, view.frame.size.height);
 			CGSize textSize = [label.text sizeWithFont:label.font];
+			if (textSize.width > label.frame.size.width) {
+				textSize.width = label.frame.size.width;
+			}
 			float outerRadius = view.bubble.outerRadius;
 			view.bubble.frame = CGRectMake(view.frame.size.width - textSize.width - 18 - outerRadius*2, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
 		}

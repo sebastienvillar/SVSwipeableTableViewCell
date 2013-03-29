@@ -8,6 +8,7 @@
 
 #import "SVTableViewController.h"
 #import "SVSwipeableTableViewCell.h"
+#import "SVBackgroundCell.h"
 
 @interface SVTableViewController ()
 @property (strong, readonly) NSMutableArray* data;
@@ -70,6 +71,9 @@
 	cell.textLabel.backgroundColor = [UIColor clearColor];
 	[cell addRightAction];
 	[cell addLeftAction];
+	SVBackgroundCell* leftCell = (SVBackgroundCell*)cell.leftBackgroundCellView;
+	leftCell.title.text = @"My Great Action";
+	leftCell.title.font = [UIFont fontWithName:@"Arial" size:16];
 	cell.withShadowAnimation = YES;
     return cell;
 }
