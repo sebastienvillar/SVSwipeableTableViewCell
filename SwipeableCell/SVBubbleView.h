@@ -14,4 +14,5 @@
 
 //Private
 @property (assign, readwrite) float innerRadius;
+@property (assign, readwrite) float outerRadius;
 @end

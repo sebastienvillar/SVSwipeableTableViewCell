@@ -48,11 +48,10 @@
 		contentLayer.shadowOffset = CGSizeMake(0, 0);
 		CGRect shadowRect = CGRectInset(contentLayer.frame, 0, 0);
 		contentLayer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
+		[self addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
 		_sv_swiping = NO;
 		_withShadowAnimation = NO;
 		_sv_animating = NO;
-		//SVBubbleView* bubbleView = [[SVBubbleView alloc] initWithFrame:CGRectMake(100, 0, 40, 40)];
-		//[self.contentView addSubview:bubbleView];
     }
     return self;
 }
@@ -69,11 +68,20 @@
 		[self insertSubview:self.leftBackgroundCellView belowSubview:self.contentView];
 	}
 	self.leftBackgroundCellView.hidden = NO;
+	SVBackgroundCell* view = (SVBackgroundCell*)self.leftBackgroundCellView;
+	[view addObserver:self forKeyPath:@"title.text" options:NSKeyValueObservingOptionNew context:nil];
+	[view addObserver:self forKeyPath:@"title.attributedText" options:NSKeyValueObservingOptionNew context:nil];
+	[view addObserver:self forKeyPath:@"title.font" options:NSKeyValueObservingOptionNew context:nil];
+	view.title.text = @"Action";
+	view.title.frame = CGRectMake(10, 0, 125, view.frame.size.height);
 }
 
 - (void)removeLeftAction {
 	if (self.leftBackgroundCellView) {
 		[self.leftBackgroundCellView removeFromSuperview];
+		[self.leftBackgroundCellView removeObserver:self forKeyPath:@"title.text"];
+		[self.leftBackgroundCellView removeObserver:self forKeyPath:@"title.attributedText"];
+		[self.leftBackgroundCellView removeObserver:self forKeyPath:@"title.font"];
 		self.leftBackgroundCellView = nil;
 	}
 }
@@ -90,11 +98,20 @@
 		[self insertSubview:self.rightBackgroundCellView belowSubview:view];
 	}
 	self.rightBackgroundCellView.hidden = NO;
+	SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
+	[view addObserver:self forKeyPath:@"title.text" options:NSKeyValueObservingOptionNew context:nil];
+	[view addObserver:self forKeyPath:@"title.attributedText" options:NSKeyValueObservingOptionNew context:nil];
+	[view addObserver:self forKeyPath:@"title.font" options:NSKeyValueObservingOptionNew context:nil];
+	view.title.text = @"Action";
+	view.title.frame = CGRectMake(view.frame.size.width - 125 - 10, 0, 125, view.frame.size.height);
 }
 
 - (void)removeRightAction {
 	if (self.rightBackgroundCellView) {
 		[self.rightBackgroundCellView removeFromSuperview];
+		[self.rightBackgroundCellView removeObserver:self forKeyPath:@"title.text"];
+		[self.rightBackgroundCellView removeObserver:self forKeyPath:@"title.attributedText"];
+		[self.rightBackgroundCellView removeObserver:self forKeyPath:@"title.font"];
 		self.rightBackgroundCellView = nil;
 	}
 }
@@ -123,6 +140,32 @@
 /////////////////////////////////////////////////////////////////////////////
 // Private
 /////////////////////////////////////////////////////////////////////////////
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	if ([keyPath isEqualToString:@"frame"]) {
+		CGRect shadowRect = CGRectInset(self.contentView.layer.frame, 0, 0);
+		self.contentView.layer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
+	}
+	else if ([keyPath hasPrefix:@"title"]) {
+		if (object == self.leftBackgroundCellView) {
+			SVBackgroundCell* view = (SVBackgroundCell*)self.leftBackgroundCellView;
+			UILabel* label = view.title;
+			label.frame = CGRectMake(10, 0, 125, view.frame.size.height);
+			CGSize textSize = [label.text sizeWithFont:label.font];
+			float outerRadius = view.bubble.outerRadius;
+			view.bubble.frame = CGRectMake(textSize.width + 18, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
+		}
+		else {
+			SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
+			UILabel* label = view.title;
+			label.textAlignment = NSTextAlignmentRight;
+			label.frame = CGRectMake(view.frame.size.width - 125 - 10, 0, 125, view.frame.size.height);
+			CGSize textSize = [label.text sizeWithFont:label.font];
+			float outerRadius = view.bubble.outerRadius;
+			view.bubble.frame = CGRectMake(view.frame.size.width - textSize.width - 18 - outerRadius*2, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
+		}
+	}	
+}
 
 - (void)sv_sendViewsToBack {
 	if (self.leftBackgroundCellView) {

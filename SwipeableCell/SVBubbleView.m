@@ -12,7 +12,6 @@
 #define kDefaultOuterColor [UIColor colorWithRed:0.5725 green:0.5686 blue:0.5686 alpha:1.0000]
 
 @interface SVBubbleView ()
-@property (assign, readwrite) float outerRadius;
 @end
 
 @implementation SVBubbleView
