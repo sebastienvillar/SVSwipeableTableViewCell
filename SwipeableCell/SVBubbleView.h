@@ -9,5 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface SVBubbleView : UIView
+@property (strong, readwrite) UIColor* innerColor;
+@property (strong, readwrite) UIColor* outerColor;
 
+//Private
+@property (assign, readwrite) float innerRadius;
 @end
