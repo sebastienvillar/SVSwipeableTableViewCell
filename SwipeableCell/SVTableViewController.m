@@ -67,10 +67,10 @@
     SVSwipeableTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     cell.textLabel.text = [self.data objectAtIndex:indexPath.row];
-	//cell.textLabel.backgroundColor = [UIColor clearColor];
+	cell.textLabel.backgroundColor = [UIColor clearColor];
 	[cell addRightAction];
 	[cell addLeftAction];
-	cell.withShadowAnimation = NO;
+	cell.withShadowAnimation = YES;
     return cell;
 }
 

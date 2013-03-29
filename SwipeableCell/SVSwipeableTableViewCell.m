@@ -8,20 +8,24 @@
 
 #import "SVSwipeableTableViewCell.h"
 #import "SVBackgroundCell.h"
+#import "SVBubbleView.h"
 
 #import <QuartzCore/QuartzCore.h>
 
 #define kSwipeEndAnimationOffset 10
-#define kSwipeEndAnimationDuration 0.3
+#define kSwipeEndAnimationDuration 0.4
 
 @interface SVSwipeableTableViewCell ()
 @property (assign, readwrite, getter = sv_isSwiping) BOOL sv_swiping;
+@property (assign, readwrite, getter = sv_isAnimating) BOOL sv_animating;
+@property (assign, readwrite) CGPoint startPosition;
 @end
 
 @implementation SVSwipeableTableViewCell
 @synthesize leftBackgroundCellView = _leftBackgroundCellView,
 			rightBackgroundCellView = _rightBackgroundCellView,
-			sv_swiping = sv_swiping,
+			sv_swiping = _sv_swiping,
+			sv_animating = _sv_animating,
 			withShadowAnimation = _withShadowAnimation;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -44,8 +48,11 @@
 		contentLayer.shadowOffset = CGSizeMake(0, 0);
 		CGRect shadowRect = CGRectInset(contentLayer.frame, 0, 0);
 		contentLayer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
-		sv_swiping = NO;
+		_sv_swiping = NO;
 		_withShadowAnimation = NO;
+		_sv_animating = NO;
+		//SVBubbleView* bubbleView = [[SVBubbleView alloc] initWithFrame:CGRectMake(100, 0, 40, 40)];
+		//[self.contentView addSubview:bubbleView];
     }
     return self;
 }
@@ -100,13 +107,17 @@
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-	[super setSelected:selected animated:animated];
-	[self sv_sendViewsToBack];
+	if (!self.sv_isAnimating) {
+		[super setSelected:selected animated:animated];
+		[self sv_sendViewsToBack];
+	}
 }
 
 - (void)setSelected:(BOOL)selected {
-	[super setSelected:selected];
-	[self sv_sendViewsToBack];
+	if (!self.sv_isAnimating) {
+		[super setSelected:selected];
+		[self sv_sendViewsToBack];
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -134,6 +145,9 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
 	if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		if (self.sv_isAnimating) {
+			return NO;
+		}
 		UIPanGestureRecognizer* panGestureRecognizer = (UIPanGestureRecognizer*)gestureRecognizer;
 		CGPoint destinationPoint = [panGestureRecognizer translationInView:self];
 		return [self sv_shownBackgroundCellViewWithDestinationPoint:destinationPoint] != nil;
@@ -143,6 +157,9 @@
 
 - (void)sv_swipe:(UIPanGestureRecognizer*)gestureRecognizer {
 	if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+		if (self.selected) {
+			[self setSelected:NO animated:NO];
+		}
 		if (self.withShadowAnimation) {
 			self.clipsToBounds = NO;
 			[self.superview bringSubviewToFront:self];
@@ -160,6 +177,7 @@
 	}
 	
 	else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+		self.sv_animating = YES;
 		CALayer* contentLayer = self.contentView.layer;
 		CGRect contentFrame = contentLayer.frame;
 		float contentYPosition = contentFrame.origin.y + contentFrame.size.height/2;
@@ -183,6 +201,8 @@
 			[contentLayer addAnimation:shadowOpacityAnimation forKey:@"shadowOpacity"];
 		}
 		
+		translationAnimation.delegate = self;
+		[translationAnimation setValue:@"position" forKey:@"name"];
 		[contentLayer addAnimation:translationAnimation forKey:@"position"];
 		CGPathRelease(path);
 		
@@ -202,7 +222,7 @@
 				self.leftBackgroundCellView.hidden = YES;
 			}
 			CGRect contentViewFrame = self.contentView.frame;
-			contentViewFrame.origin.x = destinationPoint.x;
+			contentViewFrame.origin.x = self.startPosition.x + destinationPoint.x;
 			self.contentView.frame = contentViewFrame;
 		}
 	}
@@ -211,5 +231,11 @@
 
 #pragma mark - CAAnimation delegate
 
-
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+	if (flag) {
+		if ([[anim valueForKey:@"name"] isEqual:@"position"]) {
+			self.sv_animating = NO;
+		}
+	}
+}
 @end
