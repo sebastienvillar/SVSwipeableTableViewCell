@@ -7,34 +7,36 @@
 //
 
 #import "SVSwipeableTableViewCell.h"
-#import "SVBackgroundCell.h"
+#import "SVActionView.h"
 #import "SVBubbleView.h"
+#import "SVActionDelegate.h"
 
 #import <QuartzCore/QuartzCore.h>
 
 #define kSwipeEndAnimationOffset 10
 #define kSwipeEndAnimationDuration 0.4
-#define kTriggerDistance 25
 
 @interface SVSwipeableTableViewCell ()
+@property (strong, readwrite) UIView* sv_leftActionView;
+@property (strong, readwrite) UIView* sv_rightActionView;
 @property (assign, readwrite, getter = sv_isSwiping) BOOL sv_swiping;
 @property (assign, readwrite, getter = sv_isAnimating) BOOL sv_animating;
-@property (assign, readwrite) CGPoint sv_beginLeftTriggerPoint;
-@property (assign, readwrite) CGPoint sv_beginRightTriggerPoint;
-@property (assign, readwrite) CGPoint sv_leftTriggerPoint;
-@property (assign, readwrite) CGPoint sv_rightTriggerPoint;
+@property (strong, readwrite) SVActionDelegate* sv_delegate;
+@property (assign, readwrite) BOOL sv_trigger;
 @end
 
 @implementation SVSwipeableTableViewCell
-@synthesize leftBackgroundCellView = _leftBackgroundCellView,
-			rightBackgroundCellView = _rightBackgroundCellView,
+
+//Public
+@synthesize withShadowAnimation = _withShadowAnimation;
+
+//Private
+@synthesize sv_leftActionView = _sv_leftActionView,
+			sv_rightActionView = _sv_rightActionView,
 			sv_swiping = _sv_swiping,
 			sv_animating = _sv_animating,
-			withShadowAnimation = _withShadowAnimation,
-			sv_beginLeftTriggerPoint = _sv_beginLeftTriggerPoint,
-			sv_beginRightTriggerPoint = sv_beginRightTriggerPoint,
-			sv_leftTriggerPoint = _sv_leftTriggerPoint,
-			sv_rightTriggerPoint = _sv_rightTriggerPoint;
+			sv_delegate = _sv_delegate,
+			sv_trigger = _sv_trigger;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -60,6 +62,8 @@
 		_sv_swiping = NO;
 		_withShadowAnimation = NO;
 		_sv_animating = NO;
+		_sv_delegate = [[SVActionDelegate alloc] init];
+		_sv_trigger = NO;
     }
     return self;
 }
@@ -68,138 +72,131 @@
 // Public
 /////////////////////////////////////////////////////////////////////////////
 
-- (void)addLeftAction {
-	if (!self.leftBackgroundCellView) {
-		self.leftBackgroundCellView = [[SVBackgroundCell alloc] initWithFrame:self.bounds];
+- (void)addLeftActionWithView:(UIView *)view {
+	if (self.sv_leftActionView) {
+		[self.sv_leftActionView removeFromSuperview];
 	}
-	if (!self.leftBackgroundCellView.superview) {
-		[self insertSubview:self.leftBackgroundCellView belowSubview:self.contentView];
+	self.sv_leftActionView = view;
+	[self insertSubview:self.sv_leftActionView belowSubview:self.contentView];
+	if ([self.sv_leftActionView isKindOfClass:SVActionView.class]) {
+		self.sv_delegate.leftActionView = (SVActionView*)self.sv_leftActionView;
 	}
-	self.leftBackgroundCellView.hidden = NO;
-	SVBackgroundCell* view = (SVBackgroundCell*)self.leftBackgroundCellView;
-	[view addObserver:self forKeyPath:@"title.text" options:NSKeyValueObservingOptionNew context:nil];
-	[view addObserver:self forKeyPath:@"title.attributedText" options:NSKeyValueObservingOptionNew context:nil];
-	[view addObserver:self forKeyPath:@"title.font" options:NSKeyValueObservingOptionNew context:nil];
-	view.title.text = @"Action";
-	view.title.frame = CGRectMake(10, 0, 125, view.frame.size.height);
 }
 
 - (void)removeLeftAction {
-	if (self.leftBackgroundCellView) {
-		[self.leftBackgroundCellView removeFromSuperview];
-		[self.leftBackgroundCellView removeObserver:self forKeyPath:@"title.text"];
-		[self.leftBackgroundCellView removeObserver:self forKeyPath:@"title.attributedText"];
-		[self.leftBackgroundCellView removeObserver:self forKeyPath:@"title.font"];
-		self.leftBackgroundCellView = nil;
+	if (self.sv_leftActionView) {
+		[self.sv_leftActionView removeFromSuperview];
+		if ([self.sv_leftActionView isKindOfClass:SVActionView.class]) {
+			self.sv_delegate.leftActionView = nil;
+		}
+		self.sv_leftActionView = nil;
+		[self deletePrivateDelegateIfNeeded];
 	}
 }
 
-- (void)addRightAction {
-	if (!self.rightBackgroundCellView) {
-		self.rightBackgroundCellView = [[SVBackgroundCell alloc] initWithFrame:self.bounds];
+- (void)addRightActionWithView:(UIView *)view {
+	if (self.sv_rightActionView) {
+		[self.sv_rightActionView removeFromSuperview];
 	}
-	if (!self.rightBackgroundCellView.superview) {
-		UIView* view = self.contentView;
-		if (self.leftBackgroundCellView) 
-			view = self.leftBackgroundCellView;
-		
-		[self insertSubview:self.rightBackgroundCellView belowSubview:view];
+	self.sv_rightActionView = view;
+	[self insertSubview:self.sv_rightActionView belowSubview:self.contentView];
+	if ([self.sv_rightActionView isKindOfClass:SVActionView.class]) {
+		self.sv_delegate.rightActionView = (SVActionView*)self.sv_rightActionView;
 	}
-	self.rightBackgroundCellView.hidden = NO;
-	SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
-	[view addObserver:self forKeyPath:@"title.text" options:NSKeyValueObservingOptionNew context:nil];
-	[view addObserver:self forKeyPath:@"title.attributedText" options:NSKeyValueObservingOptionNew context:nil];
-	[view addObserver:self forKeyPath:@"title.font" options:NSKeyValueObservingOptionNew context:nil];
-	view.title.text = @"Action";
-	view.title.frame = CGRectMake(view.frame.size.width - 125 - 10, 0, 125, view.frame.size.height);
 }
 
 - (void)removeRightAction {
-	if (self.rightBackgroundCellView) {
-		[self.rightBackgroundCellView removeFromSuperview];
-		[self.rightBackgroundCellView removeObserver:self forKeyPath:@"title.text"];
-		[self.rightBackgroundCellView removeObserver:self forKeyPath:@"title.attributedText"];
-		[self.rightBackgroundCellView removeObserver:self forKeyPath:@"title.font"];
-		self.rightBackgroundCellView = nil;
+	if (self.sv_rightActionView) {
+		[self.sv_rightActionView removeFromSuperview];
+		if ([self.sv_rightActionView isKindOfClass:SVActionView.class]) {
+			self.sv_delegate.rightActionView = nil;
+		}
+		self.sv_rightActionView = nil;
+		[self deletePrivateDelegateIfNeeded];
 	}
 }
 
 #pragma mark - Overwritten
 
 - (void)insertSubview:(UIView *)view atIndex:(NSInteger)index {
+	[self sv_hideBackgroundViews];
 	[super insertSubview:view atIndex:index];
 	[self sv_sendViewsToBack];
+	[self sv_showBackgroundViews];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
 	if (!self.sv_isAnimating) {
+		[self sv_hideBackgroundViews];
 		[super setSelected:selected animated:animated];
 		[self sv_sendViewsToBack];
+		[self sv_showBackgroundViews];
 	}
 }
 
-- (void)setSelected:(BOOL)selected {
-	if (!self.sv_isAnimating) {
-		[super setSelected:selected];
-		[self sv_sendViewsToBack];
+- (SVActionDelegate*)sv_delegate {
+	if (!_sv_delegate) {
+		_sv_delegate = [[SVActionDelegate alloc] init];
 	}
+	return _sv_delegate;
+}
+
+- (void)setSv_delegate:(SVActionDelegate *)sv_delegate {
+	_sv_delegate = sv_delegate;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+	if (object == self && [keyPath isEqualToString:@"frame"]) {
+		CGRect shadowRect = CGRectInset(self.contentView.layer.frame, 0, 0);
+		self.contentView.layer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
+	}
+}
+
+- (void)dealloc {
+	[self removeObserver:self forKeyPath:@"frame"];
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // Private
 /////////////////////////////////////////////////////////////////////////////
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-	if ([keyPath isEqualToString:@"frame"]) {
-		CGRect shadowRect = CGRectInset(self.contentView.layer.frame, 0, 0);
-		self.contentView.layer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
-	}
-	else if ([keyPath hasPrefix:@"title"]) {
-		if (object == self.leftBackgroundCellView) {
-			SVBackgroundCell* view = (SVBackgroundCell*)self.leftBackgroundCellView;
-			UILabel* label = view.title;
-			label.frame = CGRectMake(10, 0, 125, view.frame.size.height);
-			CGSize textSize = [label.text sizeWithFont:label.font];
-			if (textSize.width > label.frame.size.width) {
-				textSize.width = label.frame.size.width;
-			}
-			float outerRadius = view.bubble.outerRadius;
-			view.bubble.frame = CGRectMake(textSize.width + 18, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
-			self.sv_beginLeftTriggerPoint = CGPointMake(view.bubble.frame.origin.x + view.bubble.frame.size.width + 5, 0);
-			self.sv_leftTriggerPoint = CGPointMake(self.sv_beginLeftTriggerPoint.x + kTriggerDistance, self.sv_beginLeftTriggerPoint.y);
-		}
-		else {
-			SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
-			UILabel* label = view.title;
-			label.textAlignment = NSTextAlignmentRight;
-			label.frame = CGRectMake(view.frame.size.width - 125 - 10, 0, 125, view.frame.size.height);
-			CGSize textSize = [label.text sizeWithFont:label.font];
-			if (textSize.width > label.frame.size.width) {
-				textSize.width = label.frame.size.width;
-			}
-			float outerRadius = view.bubble.outerRadius;
-			view.bubble.frame = CGRectMake(view.frame.size.width - textSize.width - 18 - outerRadius*2, view.frame.size.height / 2 - outerRadius, outerRadius*2, outerRadius*2);
-			self.sv_beginRightTriggerPoint = CGPointMake(view.bubble.frame.origin.x - 5, 0);
-			self.sv_rightTriggerPoint = CGPointMake(self.sv_beginRightTriggerPoint.x - kTriggerDistance, self.sv_beginRightTriggerPoint.y);
-		}
-	}	
+- (void)sv_showBackgroundViews {
+	if (self.sv_leftActionView)
+		self.sv_leftActionView.hidden = NO;
+	if (self.sv_rightActionView)
+		self.sv_rightActionView.hidden = NO;
+}
+
+- (void)sv_hideBackgroundViews {
+	if (self.sv_leftActionView)
+		self.sv_leftActionView.hidden = YES;
+	if (self.sv_rightActionView)
+		self.sv_rightActionView.hidden = YES;
 }
 
 - (void)sv_sendViewsToBack {
-	if (self.leftBackgroundCellView) {
-		[self sendSubviewToBack:self.leftBackgroundCellView];
+	if (self.sv_leftActionView) {
+		[self sendSubviewToBack:self.sv_leftActionView];
 	}
-	if (self.rightBackgroundCellView) {
-		[self sendSubviewToBack:self.rightBackgroundCellView];
+	if (self.sv_rightActionView) {
+		[self sendSubviewToBack:self.sv_rightActionView];
 	}
 }
 
 - (UIView*)sv_shownBackgroundCellViewWithDestinationPoint:(CGPoint)destinationPoint {
 	if (destinationPoint.x > 0)
-		return self.leftBackgroundCellView;
+		return self.sv_leftActionView;
 	else if (destinationPoint.x < 0)
-		return self.rightBackgroundCellView;
+		return self.sv_rightActionView;
 	return nil;
+}
+
+- (void)deletePrivateDelegateIfNeeded {
+	if ((self.sv_leftActionView && [self.sv_leftActionView isKindOfClass:SVActionView.class]) ||
+		(self.sv_rightActionView && [self.sv_rightActionView isKindOfClass:SVActionView.class])) {
+		return;
+	}
+	self.sv_delegate = nil;
 }
 
 #pragma mark - UIGestureRecognizer
@@ -267,15 +264,17 @@
 		[contentLayer addAnimation:translationAnimation forKey:@"position"];
 		CGPathRelease(path);
 		
-		SVBackgroundCell* view = (SVBackgroundCell*)[self sv_shownBackgroundCellViewWithDestinationPoint:contentFrame.origin];
-		if (view == self.leftBackgroundCellView) {
-			if (contentFrame.origin.x > self.sv_leftTriggerPoint.x) {
-				NSLog(@"trigger left");
+		if (self.sv_trigger) {
+			UIView* view = [self sv_shownBackgroundCellViewWithDestinationPoint:contentFrame.origin];
+			if (view == self.sv_leftActionView) {
+				if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didTriggerAction:)]) {
+					[self.delegate cell:self didTriggerAction:SVSwipeLeftAction];
+				}
 			}
-		}
-		else {
-			if ((contentFrame.origin.x + contentFrame.size.width) < self.sv_rightTriggerPoint.x) {
-				NSLog(@"trigger right");
+			else {
+				if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didTriggerAction:)]) {
+					[self.delegate cell:self didTriggerAction:SVSwipeRightAction];
+				}
 			}
 		}
 		
@@ -286,32 +285,28 @@
 	
 	else {
 		CGPoint destinationPoint = [gestureRecognizer translationInView:self];
-		UIView* shownBackgroundCell = [self sv_shownBackgroundCellViewWithDestinationPoint:destinationPoint];
-		if (shownBackgroundCell) {
+		UIView* shownView = [self sv_shownBackgroundCellViewWithDestinationPoint:destinationPoint];
+		if (shownView) {
 			CGRect contentViewFrame = self.contentView.frame;
 			contentViewFrame.origin.x = destinationPoint.x;
 			self.contentView.frame = contentViewFrame;
+			SVSwipeDirection swipeDirection;
 
-			if (shownBackgroundCell == self.leftBackgroundCellView) {
-				self.leftBackgroundCellView.hidden = NO;
-				SVBackgroundCell* view = (SVBackgroundCell*)self.leftBackgroundCellView;
-				if (contentViewFrame.origin.x > self.sv_beginLeftTriggerPoint.x) {
-					float ratio = (contentViewFrame.origin.x - self.sv_beginLeftTriggerPoint.x) / (self.sv_leftTriggerPoint.x - self.sv_beginLeftTriggerPoint.x);
-					view.bubble.innerRadius = ratio * view.bubble.outerRadius;
-				}
-				else
-					view.bubble.innerRadius = 0;
-
+			if (shownView == self.sv_leftActionView) {
+				self.sv_leftActionView.hidden = NO;
+				self.sv_rightActionView.hidden = YES;
+				swipeDirection = SVSwipeLeftToRight;
 			}
 			else {
-				self.leftBackgroundCellView.hidden = YES;
-				SVBackgroundCell* view = (SVBackgroundCell*)self.rightBackgroundCellView;
-				if (contentViewFrame.origin.x + contentViewFrame.size.width < self.sv_beginRightTriggerPoint.x) {
-					float ratio = (self.sv_beginRightTriggerPoint.x - (contentViewFrame.origin.x + contentViewFrame.size.width)) / (self.sv_beginRightTriggerPoint.x - self.sv_rightTriggerPoint.x);
-					view.bubble.innerRadius = ratio * view.bubble.outerRadius;
-				}
-				else
-					view.bubble.innerRadius = 0;
+				self.sv_leftActionView.hidden = YES;
+				self.sv_rightActionView.hidden = NO;
+				swipeDirection = SVSwipeRightToLeft;
+			}
+			if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didSwipeWithDirection:offset:)]) {
+				[self.delegate cell:self didSwipeWithDirection:swipeDirection offset:fabsf(contentViewFrame.origin.x)];
+			}
+			if (self.sv_delegate) {
+				[self.sv_delegate cell:self didSwipeWithDirection:swipeDirection offset:fabsf(contentViewFrame.origin.x)];
 			}
 		}
 	}
@@ -324,9 +319,14 @@
 	if (flag) {
 		if ([[anim valueForKey:@"name"] isEqual:@"position"]) {
 			self.sv_animating = NO;
-			((SVBackgroundCell*)self.leftBackgroundCellView).bubble.innerRadius = 0;
-			((SVBackgroundCell*)self.rightBackgroundCellView).bubble.innerRadius = 0;
+			if (self.delegate && [self.delegate respondsToSelector:@selector(cellDidFinishTriggerAnimation:)]) {
+				[self.delegate cellDidFinishTriggerAnimation:self];
+			}
+			if (self.sv_delegate) {
+				[self.sv_delegate cellDidFinishTriggerAnimation:self];
+			}
 		}
 	}
 }
+
 @end

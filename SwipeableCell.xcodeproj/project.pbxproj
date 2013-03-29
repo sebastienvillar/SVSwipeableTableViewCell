@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D0F9A811705D1C200440105 /* SVActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F9A801705D1C200440105 /* SVActionView.m */; };
 		4D463C251701B76D00377E73 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D463C241701B76D00377E73 /* UIKit.framework */; };
 		4D463C271701B76D00377E73 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D463C261701B76D00377E73 /* Foundation.framework */; };
 		4D463C291701B76D00377E73 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D463C281701B76D00377E73 /* CoreGraphics.framework */; };
@@ -18,12 +19,15 @@
 		4D463C3B1701B76D00377E73 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D463C3A1701B76D00377E73 /* Default-568h@2x.png */; };
 		4D463C431701B78600377E73 /* SVSwipeableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C421701B78600377E73 /* SVSwipeableTableViewCell.m */; };
 		4D463C461701B98300377E73 /* SVBubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C451701B98300377E73 /* SVBubbleView.m */; };
-		4D463C491701B9AB00377E73 /* SVBackgroundCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D463C481701B9AB00377E73 /* SVBackgroundCell.m */; };
+		4D4CF30B1705DD6700C6BBF2 /* SVActionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D4CF30A1705DD6700C6BBF2 /* SVActionDelegate.m */; };
 		4DBD92B81701BFD900229ABB /* SVTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBD92B71701BFD900229ABB /* SVTableViewController.m */; };
 		4DBD92BD1701CE6200229ABB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DBD92BB1701CE3B00229ABB /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D0F9A7F1705D1C200440105 /* SVActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVActionView.h; sourceTree = "<group>"; };
+		4D0F9A801705D1C200440105 /* SVActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVActionView.m; sourceTree = "<group>"; };
+		4D0F9A821705D25B00440105 /* SVSwipeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SVSwipeDelegate.h; sourceTree = "<group>"; };
 		4D463C211701B76D00377E73 /* SwipeableCell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwipeableCell.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D463C241701B76D00377E73 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4D463C261701B76D00377E73 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -41,8 +45,8 @@
 		4D463C421701B78600377E73 /* SVSwipeableTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSwipeableTableViewCell.m; sourceTree = "<group>"; };
 		4D463C441701B98300377E73 /* SVBubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVBubbleView.h; sourceTree = "<group>"; };
 		4D463C451701B98300377E73 /* SVBubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVBubbleView.m; sourceTree = "<group>"; };
-		4D463C471701B9AB00377E73 /* SVBackgroundCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVBackgroundCell.h; sourceTree = "<group>"; };
-		4D463C481701B9AB00377E73 /* SVBackgroundCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVBackgroundCell.m; sourceTree = "<group>"; };
+		4D4CF3091705DD6700C6BBF2 /* SVActionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVActionDelegate.h; sourceTree = "<group>"; };
+		4D4CF30A1705DD6700C6BBF2 /* SVActionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVActionDelegate.m; sourceTree = "<group>"; };
 		4DBD92B61701BFD900229ABB /* SVTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVTableViewController.h; sourceTree = "<group>"; };
 		4DBD92B71701BFD900229ABB /* SVTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVTableViewController.m; sourceTree = "<group>"; };
 		4DBD92BB1701CE3B00229ABB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -102,8 +106,11 @@
 				4D463C421701B78600377E73 /* SVSwipeableTableViewCell.m */,
 				4D463C441701B98300377E73 /* SVBubbleView.h */,
 				4D463C451701B98300377E73 /* SVBubbleView.m */,
-				4D463C471701B9AB00377E73 /* SVBackgroundCell.h */,
-				4D463C481701B9AB00377E73 /* SVBackgroundCell.m */,
+				4D0F9A7F1705D1C200440105 /* SVActionView.h */,
+				4D0F9A801705D1C200440105 /* SVActionView.m */,
+				4D0F9A821705D25B00440105 /* SVSwipeDelegate.h */,
+				4D4CF3091705DD6700C6BBF2 /* SVActionDelegate.h */,
+				4D4CF30A1705DD6700C6BBF2 /* SVActionDelegate.m */,
 				4D463C2B1701B76D00377E73 /* Supporting Files */,
 			);
 			path = SwipeableCell;
@@ -193,8 +200,9 @@
 				4D463C351701B76D00377E73 /* SVAppDelegate.m in Sources */,
 				4D463C431701B78600377E73 /* SVSwipeableTableViewCell.m in Sources */,
 				4D463C461701B98300377E73 /* SVBubbleView.m in Sources */,
-				4D463C491701B9AB00377E73 /* SVBackgroundCell.m in Sources */,
 				4DBD92B81701BFD900229ABB /* SVTableViewController.m in Sources */,
+				4D0F9A811705D1C200440105 /* SVActionView.m in Sources */,
+				4D4CF30B1705DD6700C6BBF2 /* SVActionDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
