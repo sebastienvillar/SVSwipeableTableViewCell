@@ -17,8 +17,8 @@
 #define kSwipeEndAnimationDuration 0.4
 
 @interface SVSwipeableTableViewCell ()
-@property (strong, readwrite) UIView* sv_leftActionView;
-@property (strong, readwrite) UIView* sv_rightActionView;
+@property (strong, readwrite) UIView* leftActionView;
+@property (strong, readwrite) UIView* rightActionView;
 @property (assign, readwrite, getter = sv_isSwiping) BOOL sv_swiping;
 @property (assign, readwrite, getter = sv_isAnimating) BOOL sv_animating;
 @property (strong, readwrite) SVActionDelegate* sv_delegate;
@@ -31,8 +31,8 @@
 @synthesize withShadowAnimation = _withShadowAnimation;
 
 //Private
-@synthesize sv_leftActionView = _sv_leftActionView,
-			sv_rightActionView = _sv_rightActionView,
+@synthesize leftActionView = _leftActionView,
+			rightActionView = _rightActionView,
 			sv_swiping = _sv_swiping,
 			sv_animating = _sv_animating,
 			sv_delegate = _sv_delegate,
@@ -56,7 +56,7 @@
 		contentLayer.shadowOpacity = 0.0;
 		contentLayer.shadowRadius = 3.0;
 		contentLayer.shadowOffset = CGSizeMake(0, 0);
-		CGRect shadowRect = CGRectInset(contentLayer.frame, 0, 0);
+		CGRect shadowRect = CGRectInset(contentLayer.bounds, 0, 0);
 		contentLayer.shadowPath = CGPathCreateWithRect(shadowRect, NULL);
 		[self addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
 		_sv_swiping = NO;
@@ -73,46 +73,44 @@
 /////////////////////////////////////////////////////////////////////////////
 
 - (void)addLeftActionWithView:(UIView *)view {
-	if (self.sv_leftActionView) {
-		[self.sv_leftActionView removeFromSuperview];
+	if (self.leftActionView) {
+		[self.leftActionView removeFromSuperview];
 	}
-	self.sv_leftActionView = view;
-	[self insertSubview:self.sv_leftActionView belowSubview:self.contentView];
-	if ([self.sv_leftActionView isKindOfClass:SVActionView.class]) {
-		self.sv_delegate.leftActionView = (SVActionView*)self.sv_leftActionView;
+	self.leftActionView = view;
+	[self insertSubview:self.leftActionView belowSubview:self.contentView];
+	if ([self.leftActionView isKindOfClass:SVActionView.class]) {
+		self.sv_delegate.leftActionView = (SVActionView*)self.leftActionView;
 	}
 }
 
 - (void)removeLeftAction {
-	if (self.sv_leftActionView) {
-		[self.sv_leftActionView removeFromSuperview];
-		if ([self.sv_leftActionView isKindOfClass:SVActionView.class]) {
+	if (self.leftActionView) {
+		[self.leftActionView removeFromSuperview];
+		if ([self.leftActionView isKindOfClass:SVActionView.class]) {
 			self.sv_delegate.leftActionView = nil;
 		}
-		self.sv_leftActionView = nil;
-		[self deletePrivateDelegateIfNeeded];
+		self.leftActionView = nil;
 	}
 }
 
 - (void)addRightActionWithView:(UIView *)view {
-	if (self.sv_rightActionView) {
-		[self.sv_rightActionView removeFromSuperview];
+	if (self.rightActionView) {
+		[self.rightActionView removeFromSuperview];
 	}
-	self.sv_rightActionView = view;
-	[self insertSubview:self.sv_rightActionView belowSubview:self.contentView];
-	if ([self.sv_rightActionView isKindOfClass:SVActionView.class]) {
-		self.sv_delegate.rightActionView = (SVActionView*)self.sv_rightActionView;
+	self.rightActionView = view;
+	[self insertSubview:self.rightActionView belowSubview:self.contentView];
+	if ([self.rightActionView isKindOfClass:SVActionView.class]) {
+		self.sv_delegate.rightActionView = (SVActionView*)self.rightActionView;
 	}
 }
 
 - (void)removeRightAction {
-	if (self.sv_rightActionView) {
-		[self.sv_rightActionView removeFromSuperview];
-		if ([self.sv_rightActionView isKindOfClass:SVActionView.class]) {
+	if (self.rightActionView) {
+		[self.rightActionView removeFromSuperview];
+		if ([self.rightActionView isKindOfClass:SVActionView.class]) {
 			self.sv_delegate.rightActionView = nil;
 		}
-		self.sv_rightActionView = nil;
-		[self deletePrivateDelegateIfNeeded];
+		self.rightActionView = nil;
 	}
 }
 
@@ -161,42 +159,34 @@
 /////////////////////////////////////////////////////////////////////////////
 
 - (void)sv_showBackgroundViews {
-	if (self.sv_leftActionView)
-		self.sv_leftActionView.hidden = NO;
-	if (self.sv_rightActionView)
-		self.sv_rightActionView.hidden = NO;
+	if (self.leftActionView)
+		self.leftActionView.hidden = NO;
+	if (self.rightActionView)
+		self.rightActionView.hidden = NO;
 }
 
 - (void)sv_hideBackgroundViews {
-	if (self.sv_leftActionView)
-		self.sv_leftActionView.hidden = YES;
-	if (self.sv_rightActionView)
-		self.sv_rightActionView.hidden = YES;
+	if (self.leftActionView)
+		self.leftActionView.hidden = YES;
+	if (self.rightActionView)
+		self.rightActionView.hidden = YES;
 }
 
 - (void)sv_sendViewsToBack {
-	if (self.sv_leftActionView) {
-		[self sendSubviewToBack:self.sv_leftActionView];
+	if (self.leftActionView) {
+		[self sendSubviewToBack:self.leftActionView];
 	}
-	if (self.sv_rightActionView) {
-		[self sendSubviewToBack:self.sv_rightActionView];
+	if (self.rightActionView) {
+		[self sendSubviewToBack:self.rightActionView];
 	}
 }
 
 - (UIView*)sv_shownBackgroundCellViewAtDestinationPoint:(CGPoint)destinationPoint {
 	if (destinationPoint.x > 0)
-		return self.sv_leftActionView;
+		return self.leftActionView;
 	else if (destinationPoint.x < 0)
-		return self.sv_rightActionView;
+		return self.rightActionView;
 	return nil;
-}
-
-- (void)deletePrivateDelegateIfNeeded {
-	if ((self.sv_leftActionView && [self.sv_leftActionView isKindOfClass:SVActionView.class]) ||
-		(self.sv_rightActionView && [self.sv_rightActionView isKindOfClass:SVActionView.class])) {
-		return;
-	}
-	self.sv_delegate = nil;
 }
 
 #pragma mark - UIGestureRecognizer
@@ -218,6 +208,8 @@
 		if (self.selected) {
 			[self setSelected:NO animated:NO];
 		}
+		self.sv_trigger = NO;
+		self.selectedBackgroundView.alpha = 1.0;
 		if (self.withShadowAnimation) {
 			self.clipsToBounds = NO;
 			[self.superview bringSubviewToFront:self];
@@ -261,12 +253,14 @@
 		
 		translationAnimation.delegate = self;
 		[translationAnimation setValue:@"position" forKey:@"name"];
+		UIView* shownView = [self sv_shownBackgroundCellViewAtDestinationPoint:contentFrame.origin];
+		[translationAnimation setValue:shownView forKey:@"view"];
 		[contentLayer addAnimation:translationAnimation forKey:@"position"];
 		CGPathRelease(path);
 		
 		if (self.sv_trigger) {
 			UIView* view = [self sv_shownBackgroundCellViewAtDestinationPoint:contentFrame.origin];
-			if (view == self.sv_leftActionView) {
+			if (view == self.leftActionView) {
 				if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didTriggerAction:)]) {
 					[self.delegate cell:self didTriggerAction:SVSwipeLeftAction];
 				}
@@ -292,21 +286,23 @@
 			self.contentView.frame = contentViewFrame;
 			SVSwipeDirection swipeDirection;
 
-			if (shownView == self.sv_leftActionView) {
-				self.sv_leftActionView.hidden = NO;
-				self.sv_rightActionView.hidden = YES;
+			if (shownView == self.leftActionView) {
+				self.leftActionView.hidden = NO;
+				self.rightActionView.hidden = YES;
 				swipeDirection = SVSwipeLeftToRight;
 			}
 			else {
-				self.sv_leftActionView.hidden = YES;
-				self.sv_rightActionView.hidden = NO;
+				self.leftActionView.hidden = YES;
+				self.rightActionView.hidden = NO;
 				swipeDirection = SVSwipeRightToLeft;
 			}
-			if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didSwipeWithDirection:offset:)]) {
-				[self.delegate cell:self didSwipeWithDirection:swipeDirection offset:fabsf(contentViewFrame.origin.x)];
+			
+			if ([shownView isKindOfClass:SVActionView.class]) {
+				self.sv_trigger = [self.sv_delegate cell:self didSwipeWithDirection:swipeDirection offset:fabsf(contentViewFrame.origin.x)];
 			}
-			if (self.sv_delegate) {
-				[self.sv_delegate cell:self didSwipeWithDirection:swipeDirection offset:fabsf(contentViewFrame.origin.x)];
+			
+			else if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didSwipeWithDirection:offset:)]) {
+				self.sv_trigger = [self.delegate cell:self didSwipeWithDirection:swipeDirection offset:fabsf(contentViewFrame.origin.x)];
 			}
 		}
 	}
@@ -319,11 +315,11 @@
 	if (flag) {
 		if ([[anim valueForKey:@"name"] isEqual:@"position"]) {
 			self.sv_animating = NO;
-			if (self.delegate && [self.delegate respondsToSelector:@selector(cellDidFinishTriggerAnimation:)]) {
-				[self.delegate cellDidFinishTriggerAnimation:self];
-			}
-			if (self.sv_delegate) {
+			if ([[anim valueForKey:@"view"] isKindOfClass:SVActionView.class]) {
 				[self.sv_delegate cellDidFinishTriggerAnimation:self];
+			}
+			else if (self.delegate && [self.delegate respondsToSelector:@selector(cellDidFinishTriggerAnimation:)]) {
+				[self.delegate cellDidFinishTriggerAnimation:self];
 			}
 		}
 	}

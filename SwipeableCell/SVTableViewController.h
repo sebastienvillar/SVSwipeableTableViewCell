@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SVSwipeDelegate.h"
 
-@interface SVTableViewController : UITableViewController
+@interface SVTableViewController : UITableViewController <SVSwipeDelegate>
 
 @end

@@ -77,6 +77,7 @@
 	SVActionView* view2 = [[SVActionView alloc] initWithFrame:cell.bounds];
 	[cell addRightActionWithView:view2];
 	cell.withShadowAnimation = YES;
+	cell.delegate = self;
     return cell;
 }
 
@@ -134,6 +135,18 @@
      // Pass the selected object to the new view controller.
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
+}
+
+- (BOOL)cell:(SVSwipeableTableViewCell *)cell didSwipeWithDirection:(SVSwipeDirection)direction offset:(float)offset {
+	return NO;
+}
+
+- (void)cell:(SVSwipeableTableViewCell *)cell didTriggerAction:(SVSwipeAction)action {
+	
+}
+
+- (void)cellDidFinishTriggerAnimation:(UITableViewCell *)cell {
+	NSLog(@"did finish animation");
 }
 
 @end

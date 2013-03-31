@@ -106,9 +106,10 @@
 	}
 }
 
-- (BOOL)cell:(UITableViewCell *)cell didSwipeWithDirection:(SVSwipeDirection)direction offset:(float)offset {
+- (BOOL)cell:(SVSwipeableTableViewCell *)cell didSwipeWithDirection:(SVSwipeDirection)direction offset:(float)offset {
 	float ratio;
 	SVActionView* view;
+	BOOL returnValue = NO;
 	if (direction == SVSwipeLeftToRight) {
 		ratio = (offset - self.beginLeftTriggerOffset) / (self.leftTriggerOffset - self.beginLeftTriggerOffset);
 		view = self.leftActionView;
@@ -122,14 +123,19 @@
 	if (ratio < 0)
 		ratio = 0;
 	
-	view.bubble.innerRadius = ratio * view.bubble.outerRadius;
-	if (ratio >= 1)
-		return YES;
+	if (ratio >= 1) {
+		view.bubble.activated = YES;
+		returnValue = YES;
+	}
 	
-	return NO;
+	else
+		view.bubble.activated = NO;
+	view.bubble.innerRadius = ratio * view.bubble.outerRadius;
+
+	return returnValue;
 }
 
-- (void)cellDidFinishTriggerAnimation:(UITableViewCell *)cell {
+- (void)cellDidFinishTriggerAnimation:(SVSwipeableTableViewCell *)cell {
 	self.leftActionView.bubble.innerRadius = 0;
 	self.rightActionView.bubble.innerRadius = 0;
 }

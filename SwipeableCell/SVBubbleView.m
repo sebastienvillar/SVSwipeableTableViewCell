@@ -15,10 +15,14 @@
 @end
 
 @implementation SVBubbleView
+//Public
 @synthesize innerColor = _innerColor,
-			outerColor = _outerColor,
-			innerRadius = _innerRadius,
-			outerRadius = _outerRadius;
+			outerColor = _outerColor;
+
+//Private
+@synthesize innerRadius = _innerRadius,
+			outerRadius = _outerRadius,
+			activated = _activated;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -46,6 +50,14 @@
 	
 	[self.innerColor set];
 	CGContextFillEllipseInRect(context, innerCircleBounds);
+	
+	if (self.activated) {
+		float centerRadius = 1.5;
+		CGRect centerCircleBounds = CGRectMake(size.width/2 - centerRadius, size.height/2 - centerRadius, centerRadius * 2, centerRadius * 2);
+		
+		[self.outerColor set];
+		CGContextFillEllipseInRect(context, centerCircleBounds);
+	}
 }
 
 - (void)setInnerRadius:(float)innerRadius {

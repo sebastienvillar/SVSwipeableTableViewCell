@@ -17,10 +17,11 @@ typedef enum {
 } SVSwipeAction;
 
 #import <Foundation/Foundation.h>
+@class SVSwipeableTableViewCell;
 
 @protocol SVSwipeDelegate <NSObject>
 @optional
-- (BOOL)cell:(UITableViewCell*)cell didSwipeWithDirection:(SVSwipeDirection)direction offset:(float)offset;
-- (void)cell:(UITableViewCell*)cell didTriggerAction:(SVSwipeAction)action;
-- (void)cellDidFinishTriggerAnimation:(UITableViewCell*)cell;
+- (BOOL)cell:(SVSwipeableTableViewCell*)cell didSwipeWithDirection:(SVSwipeDirection)direction offset:(float)offset;
+- (void)cell:(SVSwipeableTableViewCell*)cell didTriggerAction:(SVSwipeAction)action;
+- (void)cellDidFinishTriggerAnimation:(SVSwipeableTableViewCell*)cell;
 @end

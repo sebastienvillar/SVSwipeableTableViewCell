@@ -14,5 +14,6 @@
 
 //Private
 @property (nonatomic, assign, readwrite) float innerRadius;
-@property (assign, readwrite) float outerRadius;
+@property (assign, readonly) float outerRadius;
+@property (assign, readwrite, getter = isActivated) BOOL activated;
 @end
