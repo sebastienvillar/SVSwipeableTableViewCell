@@ -69,19 +69,9 @@
     
     cell.textLabel.text = [self.data objectAtIndex:indexPath.row];
 	cell.textLabel.backgroundColor = [UIColor clearColor];
-	//[cell addRightAction];
-	/*SVActionView* view = [[SVActionView alloc] initWithFrame:cell.bounds];
-	view.title.text = @"Remove Album";
-	view.title.font = [UIFont fontWithName:@"Arial" size:18];
-	[cell addLeftActionWithView:view];
-	SVActionView* view2 = [[SVActionView alloc] initWithFrame:cell.bounds];
-	[cell addRightActionWithView:view2];
-	cell.withShadowAnimation = YES;*/
 	cell.delegate = self;
-	UIView* leftView = [[UIView alloc] initWithFrame:cell.bounds];
-	leftView.backgroundColor = [UIColor yellowColor];
-	UIView* rightView = [[UIView alloc] initWithFrame:cell.bounds];
-	rightView.backgroundColor = [UIColor greenColor];
+	SVActionView* leftView = [[SVActionView alloc] initWithFrame:cell.bounds];
+	SVActionView* rightView = [[SVActionView alloc] initWithFrame:cell.bounds];
 	[cell addLeftActionWithView:leftView];
 	[cell addRightActionWithView:rightView];
 	cell.withShadowAnimation = YES;
