@@ -70,14 +70,21 @@
     cell.textLabel.text = [self.data objectAtIndex:indexPath.row];
 	cell.textLabel.backgroundColor = [UIColor clearColor];
 	//[cell addRightAction];
-	SVActionView* view = [[SVActionView alloc] initWithFrame:cell.bounds];
+	/*SVActionView* view = [[SVActionView alloc] initWithFrame:cell.bounds];
 	view.title.text = @"Remove Album";
 	view.title.font = [UIFont fontWithName:@"Arial" size:18];
 	[cell addLeftActionWithView:view];
 	SVActionView* view2 = [[SVActionView alloc] initWithFrame:cell.bounds];
 	[cell addRightActionWithView:view2];
-	cell.withShadowAnimation = YES;
+	cell.withShadowAnimation = YES;*/
 	cell.delegate = self;
+	UIView* leftView = [[UIView alloc] initWithFrame:cell.bounds];
+	leftView.backgroundColor = [UIColor yellowColor];
+	UIView* rightView = [[UIView alloc] initWithFrame:cell.bounds];
+	rightView.backgroundColor = [UIColor greenColor];
+	[cell addLeftActionWithView:leftView];
+	[cell addRightActionWithView:rightView];
+	cell.withShadowAnimation = YES;
     return cell;
 }
 
@@ -138,11 +145,21 @@
 }
 
 - (BOOL)cell:(SVSwipeableTableViewCell *)cell didSwipeWithDirection:(SVSwipeDirection)direction offset:(float)offset {
+	if (offset > 100) {
+		return YES;
+	}
 	return NO;
 }
 
 - (void)cell:(SVSwipeableTableViewCell *)cell didTriggerAction:(SVSwipeAction)action {
-	
+	if (action == SVSwipeLeftAction) {
+		cell.leftActionView.backgroundColor = [UIColor redColor];
+		cell.withShadowAnimation = NO;
+	}
+	else {
+		cell.leftActionView.backgroundColor = [UIColor yellowColor];
+		cell.withShadowAnimation = YES;
+	}
 }
 
 - (void)cellDidFinishTriggerAnimation:(UITableViewCell *)cell {

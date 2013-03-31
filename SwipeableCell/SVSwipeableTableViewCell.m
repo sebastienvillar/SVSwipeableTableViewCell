@@ -117,30 +117,15 @@
 #pragma mark - Overwritten
 
 - (void)insertSubview:(UIView *)view atIndex:(NSInteger)index {
-	[self sv_hideBackgroundViews];
 	[super insertSubview:view atIndex:index];
 	[self sv_sendViewsToBack];
-	[self sv_showBackgroundViews];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-	if (!self.sv_isAnimating) {
-		[self sv_hideBackgroundViews];
+	/*if (!self.sv_isAnimating) {
 		[super setSelected:selected animated:animated];
 		[self sv_sendViewsToBack];
-		[self sv_showBackgroundViews];
-	}
-}
-
-- (SVActionDelegate*)sv_delegate {
-	if (!_sv_delegate) {
-		_sv_delegate = [[SVActionDelegate alloc] init];
-	}
-	return _sv_delegate;
-}
-
-- (void)setSv_delegate:(SVActionDelegate *)sv_delegate {
-	_sv_delegate = sv_delegate;
+	}*/
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -158,18 +143,15 @@
 // Private
 /////////////////////////////////////////////////////////////////////////////
 
-- (void)sv_showBackgroundViews {
-	if (self.leftActionView)
-		self.leftActionView.hidden = NO;
-	if (self.rightActionView)
-		self.rightActionView.hidden = NO;
+- (SVActionDelegate*)sv_delegate {
+	if (!_sv_delegate) {
+		_sv_delegate = [[SVActionDelegate alloc] init];
+	}
+	return _sv_delegate;
 }
 
-- (void)sv_hideBackgroundViews {
-	if (self.leftActionView)
-		self.leftActionView.hidden = YES;
-	if (self.rightActionView)
-		self.rightActionView.hidden = YES;
+- (void)setSv_delegate:(SVActionDelegate *)sv_delegate {
+	_sv_delegate = sv_delegate;
 }
 
 - (void)sv_sendViewsToBack {

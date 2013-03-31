@@ -15,6 +15,7 @@
 @end
 
 @implementation SVBubbleView
+
 //Public
 @synthesize innerColor = _innerColor,
 			outerColor = _outerColor;
