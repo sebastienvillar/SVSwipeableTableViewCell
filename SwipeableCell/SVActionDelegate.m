@@ -9,6 +9,7 @@
 #import "SVActionDelegate.h"
 
 #define kTriggerDistance 25
+#define kTitleWidth 135
 
 @interface SVActionDelegate ()
 @property (assign, readwrite) float beginLeftTriggerOffset;
@@ -33,7 +34,7 @@
 	}
 	_leftActionView = leftActionView;
 	SVActionView* view = self.leftActionView;
-	view.title.frame = CGRectMake(10, 0, 125, view.frame.size.height);
+	view.title.frame = CGRectMake(10, 0, kTitleWidth, view.frame.size.height);
 	CGSize textSize = [view.title.text sizeWithFont:view.title.font];
 	if (textSize.width > view.title.frame.size.width) {
 		textSize.width = view.title.frame.size.width;
@@ -59,7 +60,7 @@
 	}
 	_rightActionView = rightActionView;
 	SVActionView* view = self.rightActionView;
-	view.title.frame = CGRectMake(view.frame.size.width - 125 - 10, 0, 125, view.frame.size.height);
+	view.title.frame = CGRectMake(view.frame.size.width - kTitleWidth - 10, 0, kTitleWidth, view.frame.size.height);
 	view.title.textAlignment = NSTextAlignmentRight;
 	CGSize textSize = [view.title.text sizeWithFont:view.title.font];
 	if (textSize.width > view.title.frame.size.width) {
@@ -69,6 +70,7 @@
 	view.bubble.frame = CGRectMake(view.frame.size.width - textSize.width - 18 - outerDiameter, view.frame.size.height / 2 - outerDiameter/2, outerDiameter, outerDiameter);
 	self.beginRightTriggerOffset = view.bubble.frame.origin.x - 5;
 	self.rightTriggerOffset = self.beginRightTriggerOffset - kTriggerDistance;
+	_rightActionView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 	[view addObserver:self forKeyPath:@"title.text" options:NSKeyValueObservingOptionNew context:nil];
 	[view addObserver:self forKeyPath:@"title.attributedText" options:NSKeyValueObservingOptionNew context:nil];
 	[view addObserver:self forKeyPath:@"title.font" options:NSKeyValueObservingOptionNew context:nil];

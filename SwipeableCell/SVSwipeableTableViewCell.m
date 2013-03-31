@@ -183,7 +183,7 @@
 	}
 }
 
-- (UIView*)sv_shownBackgroundCellViewWithDestinationPoint:(CGPoint)destinationPoint {
+- (UIView*)sv_shownBackgroundCellViewAtDestinationPoint:(CGPoint)destinationPoint {
 	if (destinationPoint.x > 0)
 		return self.sv_leftActionView;
 	else if (destinationPoint.x < 0)
@@ -208,7 +208,7 @@
 		}
 		UIPanGestureRecognizer* panGestureRecognizer = (UIPanGestureRecognizer*)gestureRecognizer;
 		CGPoint destinationPoint = [panGestureRecognizer translationInView:self];
-		return [self sv_shownBackgroundCellViewWithDestinationPoint:destinationPoint] != nil;
+		return [self sv_shownBackgroundCellViewAtDestinationPoint:destinationPoint] != nil;
 	}
 	return NO;
 }
@@ -265,7 +265,7 @@
 		CGPathRelease(path);
 		
 		if (self.sv_trigger) {
-			UIView* view = [self sv_shownBackgroundCellViewWithDestinationPoint:contentFrame.origin];
+			UIView* view = [self sv_shownBackgroundCellViewAtDestinationPoint:contentFrame.origin];
 			if (view == self.sv_leftActionView) {
 				if (self.delegate && [self.delegate respondsToSelector:@selector(cell:didTriggerAction:)]) {
 					[self.delegate cell:self didTriggerAction:SVSwipeLeftAction];
@@ -285,7 +285,7 @@
 	
 	else {
 		CGPoint destinationPoint = [gestureRecognizer translationInView:self];
-		UIView* shownView = [self sv_shownBackgroundCellViewWithDestinationPoint:destinationPoint];
+		UIView* shownView = [self sv_shownBackgroundCellViewAtDestinationPoint:destinationPoint];
 		if (shownView) {
 			CGRect contentViewFrame = self.contentView.frame;
 			contentViewFrame.origin.x = destinationPoint.x;

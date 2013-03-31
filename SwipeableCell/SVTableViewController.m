@@ -71,6 +71,8 @@
 	cell.textLabel.backgroundColor = [UIColor clearColor];
 	//[cell addRightAction];
 	SVActionView* view = [[SVActionView alloc] initWithFrame:cell.bounds];
+	view.title.text = @"Remove Album";
+	view.title.font = [UIFont fontWithName:@"Arial" size:18];
 	[cell addLeftActionWithView:view];
 	SVActionView* view2 = [[SVActionView alloc] initWithFrame:cell.bounds];
 	[cell addRightActionWithView:view2];
@@ -120,7 +122,7 @@
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView*)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return 65;
+	return 60;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

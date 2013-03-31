@@ -75,4 +75,9 @@
 	}
 }
 
+- (void)dealloc {
+	[self removeObserver:self forKeyPath:@"innerRadius"];
+	[self removeObserver:self forKeyPath:@"outerRadius"];
+}
+
 @end

@@ -31,6 +31,7 @@
 		_bubble = [[SVBubbleView alloc] init];
 		[self addSubview:_title];
 		[self addSubview:_bubble];
+		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
     return self;
 }
